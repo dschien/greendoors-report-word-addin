@@ -34,6 +34,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listBox1
@@ -89,11 +90,24 @@
             this.statusLabel.Size = new System.Drawing.Size(0, 13);
             this.statusLabel.TabIndex = 5;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(402, 13);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(94, 17);
+            this.checkBox1.TabIndex = 6;
+            this.checkBox1.Text = "Generate PDF";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1150, 448);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.textBox1);
@@ -115,5 +129,6 @@
         public System.Windows.Forms.TextBox textBox1;
         public System.Windows.Forms.ProgressBar progressBar1;
         public System.Windows.Forms.Label statusLabel;
+        public System.Windows.Forms.CheckBox checkBox1;
     }
 }

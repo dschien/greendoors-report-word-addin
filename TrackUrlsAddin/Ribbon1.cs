@@ -25,7 +25,7 @@ namespace TrackUrlsAddin
             int count = 0;
             string name = Globals.ThisAddIn.Application.ActiveDocument.Name;
             string[] words = name.Split(' ');
-            string email = words[0];
+            string username = words[0];
 
             Hyperlinks links = Globals.ThisAddIn.Application.ActiveDocument.Hyperlinks;
             int total = links.Count;
@@ -46,26 +46,34 @@ namespace TrackUrlsAddin
 
                 if (address.StartsWith("http"))
                 {
-                    string redirectUrl = getRedirectUrl(address, email);
+                    string redirectUrl = getRedirectUrl(address, username);
                     // MessageBox.Show(redirectUrl, "URL Builder", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     c.Address = redirectUrl;
                     
                 }                               
             }
 
+            bool writePDF = true;
+
             if (o != null)
                 {
                     Form1 f = (Form1)o;
                     f.progressBar1.Value = 100;
                     f.statusLabel.Text = "Done";
+                    writePDF = f.checkBox1.Checked;
             }
             string folder = Globals.ThisAddIn.Application.ActiveDocument.Path;
-            
-            string fileName = name + "_redirect.pdf";
 
-            Globals.ThisAddIn.Application.ActiveDocument.SaveAs2(fileName);
-            
-            MessageBox.Show(String.Format("Replaced {0} urls in report for {1}.\n File Saved as {2}", count, email, fileName), "URL Builder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            string basename = username + " dgd report";
+            string fileName =  basename + ".docx";
+
+            Globals.ThisAddIn.Application.ActiveDocument.SaveAs2(Path.Combine(folder, fileName));
+            if (writePDF)
+            {
+                exportPDF(folder, basename + ".pdf");
+            }
+
+            MessageBox.Show(String.Format("Replaced {0} urls in report for {1}.\n File Saved as {2}", count, username, fileName), "URL Builder", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
 
@@ -81,7 +89,7 @@ namespace TrackUrlsAddin
                  (HttpWebRequest)WebRequest.Create(Properties.Settings.Default.backend_url);
             string accessToken = Properties.Settings.Default.oauth_key;
             Encoding encoding = new UTF8Encoding();
-            string postData = "{\"email\":\"" + userName + "\",\"url\":\"" + url + "\"}";
+            string postData = "{\"username\":\"" + userName + "\",\"url\":\"" + url + "\"}";
             byte[] data = encoding.GetBytes(postData);
 
             httpWReq.ProtocolVersion = HttpVersion.Version11;
@@ -168,6 +176,7 @@ namespace TrackUrlsAddin
             new SettingForm().ShowDialog();
         }
 
+     
         private void button3_Click(object sender, RibbonControlEventArgs e)
         {
             string name = Globals.ThisAddIn.Application.ActiveDocument.Name;
@@ -175,6 +184,11 @@ namespace TrackUrlsAddin
             
             string fileName = name + "_redirect.pdf";
 
+            exportPDF(folder, fileName);
+        }
+
+        private static void exportPDF(string folder, string fileName)
+        {
             Globals.ThisAddIn.Application.ActiveDocument.ExportAsFixedFormat(
                 Path.Combine(folder, fileName), Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF,
                 OpenAfterExport: true);
